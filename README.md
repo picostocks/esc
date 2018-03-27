@@ -30,7 +30,7 @@ sudo apt-get install openssl libboost-all-dev libssl-dev
 Start with cloning the git directory.
 
 ```
-git clone https://github.com/adshares/esc.git
+git clone https://github.com/picostocks/esc.git
 ```
 
 Before compiling ESC You could check if the ed25519 cryptography software is working correctly and what compile option gives You better speed for Your CPU.
@@ -314,3 +314,4 @@ Connecting more nodes can be done iteratively . The nodes broadcast their IPs an
 
 Please remember that the current version is just a proof of concept. We will create a production version of the block-chain in the coming months.
 
+...

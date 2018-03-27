@@ -44,7 +44,7 @@ public:
 				("port,p", boost::program_options::value<int>(&port)->default_value(std::atoi(SERVER_PORT)),	"service port (for peers)")
 				("addr,a", boost::program_options::value<std::string>(&addr)->default_value("127.0.0.1"),	"service address or hostname")
 				("svid,i", boost::program_options::value<int>(&svid)->default_value(0),				"service id (assigned by the network)")
-				("dnsa,d", boost::program_options::value<std::string>(&dnsa)->default_value(SERVER_DNSA),	"host name of adshares nodes")
+				("dnsa,d", boost::program_options::value<std::string>(&dnsa)->default_value(SERVER_DNSA),	"host name of ESC nodes")
 				("peer,r", boost::program_options::value<std::vector<std::string>>(&peer)->composing(),		"peer address:port/id, multiple peers allowed, id as int")
 				("back,b", boost::program_options::value<int>(&back)->default_value(0),				"roll back database given number of blocks (irreversable!)")
 				;
@@ -92,7 +92,7 @@ public:
 					std::cout << "Service svid: 1 (init node)" << std::endl;
 					svid=1;}}
 			if (vm.count("dnsa")){
-				std::cout << "Adshares nodes: " << vm["dnsa"].as<std::string>() << std::endl;}
+				std::cout << "ESC nodes: " << vm["dnsa"].as<std::string>() << std::endl;}
 			/*if (vm.count("skey")){
 				char pktext[2*32+1]; pktext[2*32]='\0';
 				if(skey.length()!=64){
