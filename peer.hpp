@@ -79,6 +79,7 @@ public:
 
   void accept() //only incoming connections
   { assert(incoming_);
+    //killme=false; //connection established
     addr = socket_.remote_endpoint().address().to_string();
     port = socket_.remote_endpoint().port();
     DLOG("%04X PEER CONNECT OK %d<->%s:%d\n",svid,socket_.local_endpoint().port(),
@@ -91,8 +92,9 @@ public:
   void connect(const boost::system::error_code& error) //only outgoing connection
   { if(error){
       DLOG("%04X PEER ACCEPT ERROR\n",svid);
-      killme=true;
+      killme=true; // not needed, as now killme=true is initial state for outgoing connections
       return;}
+    killme=false; //connection established
     assert(!incoming_);
     addr = socket_.remote_endpoint().address().to_string();
     port = socket_.remote_endpoint().port();
