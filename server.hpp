@@ -3426,7 +3426,7 @@ public:
               srvs_.xor4(srvs_.nodes[svid].hash,u.csum);
               srvs_.nodes[svid].weight+=div;
               lseek(fd,-offset_stat,SEEK_CUR);
-              write(fd,&u.rpath,offset_stat);}
+              write(fd,&u.stat,offset_stat);}
             else{
               srvs_.user_csum(u,svid,user);
               srvs_.xor4(srvs_.nodes[svid].hash,u.csum);
