@@ -3364,6 +3364,7 @@ public:
     //char filename[64];
     user_t u,ou;
     const int offset=(char*)&u+sizeof(user_t)-(char*)&u.rpath;
+    const int offset_stat=(char*)&u+sizeof(user_t)-(char*)&u.stat;
     assert((char*)&u.rpath<(char*)&u.weight);
     assert((char*)&u.rpath<(char*)&u.csum);
     const int shift=srvs_.now/BLOCKSEC;
@@ -3419,12 +3420,18 @@ public:
             if(u.weight<=TXS_DIV_FEE && (srvs_.now-USER_MIN_AGE>u.lpath)){ //alow deletion of account
               u.stat|=USER_STAT_DELETED;
               if(svid==opts_.svid && !do_sync && ofip!=NULL){
-                ofip_delete_user(user);}}
-            srvs_.user_csum(u,svid,user);
-            srvs_.xor4(srvs_.nodes[svid].hash,u.csum);
-            srvs_.nodes[svid].weight+=div;
-            lseek(fd,-offset,SEEK_CUR);
-            write(fd,&u.rpath,offset);}}} // write before undo ... not good for sync
+                ofip_delete_user(user);}
+              srvs_.user_csum(u,svid,user);
+              srvs_.xor4(srvs_.nodes[svid].hash,u.csum);
+              srvs_.nodes[svid].weight+=div;
+              lseek(fd,-offset_stat,SEEK_CUR);
+              write(fd,&u.rpath,offset_stat);}
+            else{
+              srvs_.user_csum(u,svid,user);
+              srvs_.xor4(srvs_.nodes[svid].hash,u.csum);
+              srvs_.nodes[svid].weight+=div;
+              lseek(fd,-offset,SEEK_CUR);
+              write(fd,&u.rpath,offset);}}}} // write before undo ... not good for sync
       NEXTBANK:
       update.insert(svid);
       close(fd);
