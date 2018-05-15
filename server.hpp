@@ -100,7 +100,8 @@ public:
           message_map empty;
           srvs_.msg=0;
           srvs_.msgl_put(empty,NULL);
-          finish_block();}}
+          finish_block();
+          write_header();}}
       else{
         //path=0;
         lastpath=0;
