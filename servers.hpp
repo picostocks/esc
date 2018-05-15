@@ -1087,8 +1087,19 @@ public:
 		//int fd=open(filename,O_WRONLY|O_CREAT|O_APPEND,0644);
 		int fd=open(filename,O_RDWR|O_CREAT,0644);
 		if(fd<0){
-			DLOG("ERROR, failed to save signatures in %s\n",filename);
-			return;}
+		 	char pathname[64];
+			sprintf(pathname,"blk/%03X",path>>20);
+			mkdir(pathname,0755);
+			sprintf(pathname,"blk/%03X/%05X",path>>20,path&0xFFFFF);
+			mkdir(pathname,0755);
+			sprintf(pathname,"blk/%03X/%05X/und",path>>20,path&0xFFFFF);
+			mkdir(pathname,0755);
+			sprintf(pathname,"blk/%03X/%05X/log",path>>20,path&0xFFFFF);
+			mkdir(pathname,0755);
+			fd=open(filename,O_RDWR|O_CREAT,0644);
+			if(fd<0){
+				DLOG("ERROR, failed to save signatures in %s\n",filename);
+				return;}}
 		int num=0;
 		while(read(fd,&old,sizeof(svsi_t))==sizeof(svsi_t)){
 			num++;
