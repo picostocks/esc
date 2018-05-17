@@ -770,7 +770,7 @@ public:
 			SHA256_Update(&sha256,&it->msid,sizeof(uint32_t));
 			SHA256_Update(&sha256,&it->mtim,sizeof(uint32_t));
 			SHA256_Update(&sha256,&it->status,sizeof(uint32_t));
-			SHA256_Update(&sha256,&it->weight,sizeof(uint32_t));
+			SHA256_Update(&sha256,&it->weight,sizeof(uint64_t));
 			SHA256_Update(&sha256,&it->users,sizeof(uint32_t));
 			hash_t hash;
 			SHA256_Final(hash, &sha256);
@@ -1291,7 +1291,7 @@ public:
 			SHA256_Update(&sha256,&peer_node[i].msid,sizeof(uint32_t));
 			SHA256_Update(&sha256,&peer_node[i].mtim,sizeof(uint32_t));
 			SHA256_Update(&sha256,&peer_node[i].status,sizeof(uint32_t));
-			SHA256_Update(&sha256,&peer_node[i].weight,sizeof(uint32_t));
+			SHA256_Update(&sha256,&peer_node[i].weight,sizeof(uint64_t));
 			SHA256_Update(&sha256,&peer_node[i].users,sizeof(uint32_t));
 			hash_t hash;
 			SHA256_Final(hash, &sha256);
