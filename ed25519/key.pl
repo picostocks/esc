@@ -1,8 +1,5 @@
 #!/usr/bin/perl
 
-# comments:
-# validate address: http://blockchain.info/rawaddr/13VXFcmt6yZyeDTgzbFKGjufWye5qikoji
-
 use strict;
 use warnings;
 
