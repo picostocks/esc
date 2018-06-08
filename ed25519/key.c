@@ -17,13 +17,23 @@ int main(int argc, char** argv)
 	ed25519_secret_key sk;
 	ed25519_signature  sg;
 	SHA256_CTX sha256;
+        char* key="";
 
 	assert(sizeof(sk)==SHA256_DIGEST_LENGTH);
 	if(argc<=1){
-		fprintf(stderr,"USAGE: %s \"brain-key-string\"\n",argv[0]);
+		fprintf(stderr,"USAGE: %s \"brain-key-string\"|\"-\"\n",argv[0]);
 		return(-1);}
+        if(argv[1][0]=='-' && argv[1][1]=='\0'){
+		int l=0;
+		key=malloc(1025);
+		if(fgets(key,1024,stdin)!=NULL){
+			l=strlen(key);
+			if(l>1 && key[l-1]=='\n'){
+				key[l-1]='\0';}}}
+	else{
+		key=argv[1];}
 	SHA256_Init(&sha256);
-	SHA256_Update(&sha256,argv[1],strlen(argv[1]));
+	SHA256_Update(&sha256,key,strlen(key));
 	SHA256_Final(sk,&sha256);
 	ed25519_publickey(sk,pk);
 	fprintf(stdout,"SK: ");
