@@ -383,21 +383,24 @@ public:
 			nodes[svid].users=users;
 			nodes[svid].changed.resize(1+users/64);}
 		for(auto it=undo.begin();it!=undo.end();it++){
-			uint32_t i=(it->first)/64;
-			uint32_t j=1<<((it->first)%64);
+			uint32_t i=(it->first)>>6; // /64;
+			uint32_t j=1L<<((it->first)&0x3f); // %64
 			assert(i<nodes[svid].changed.size());
 			if(nodes[svid].changed[i]&j){
-				close(fd);
-				return;}
+				//close(fd);
+				//return;
+				continue;}
 			nodes[svid].changed[i]|=j;
 			lseek(fd,(it->first)*sizeof(user_t),SEEK_SET);
 			write(fd,&it->second,sizeof(user_t));}
+		//fsync(fd);
 		close(fd);
 	}
 
 	void clear_undo()
 	{	for(auto n=nodes.begin();n!=nodes.end();n++){
-			n->changed.clear();}
+			std::fill(n->changed.begin(),n->changed.end(),0); // try this, allocating memory again can be slow
+			//n->changed.clear();
 	}
 
 	void get()
@@ -1378,7 +1381,7 @@ public:
 		sprintf(pathname,"blk/%03X/%05X/log",now>>20,now&0xFFFFF);
 		mkdir(pathname,0755);
 		for(auto n=nodes.begin();n!=nodes.end();n++){
-			n->changed.resize(1+n->users/64);}
+			n->changed.resize(1+n->users/64,0);}
                 uint32_t nextnow=now+BLOCKSEC;
 		sprintf(pathname,"blk/%03X",nextnow>>20);
 		mkdir(pathname,0755);

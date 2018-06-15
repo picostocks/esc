@@ -1140,9 +1140,9 @@ public:
       return;}
     if(do_block==2){
       if(now>srvs_.now+BLOCKSEC+(BLOCKSEC/2)||now>srvs_.now+BLOCKSEC+(VIP_MAX*VOTE_DELAY)){
-        ELOG("MISSING MESSAGES, PANIC:\n%s",print_missing_verbose());}
+        ELOG("MISSING MESSAGES, PANIC:\n%s",print_missing_verbose());} // dead lock !!!
       else{
-        DLOG("ELECTION: %s\n",winner->print_missing(&srvs_));
+        DLOG("ELECTION: %s\n",winner->print_missing(&srvs_)); // dead lock !!!
         }}
     if(do_vote && cnd1->accept() && cnd1->peers.size()>1){
       ELOG("CANDIDATE proposal accepted\n");
