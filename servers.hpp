@@ -399,7 +399,7 @@ public:
 
 	void clear_undo()
 	{	for(auto n=nodes.begin();n!=nodes.end();n++){
-			std::fill(n->changed.begin(),n->changed.end(),0); // try this, allocating memory again can be slow
+			std::fill(n->changed.begin(),n->changed.end(),0);} // try this, allocating memory again can be slow
 			//n->changed.clear();
 	}
 

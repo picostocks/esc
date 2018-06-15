@@ -109,11 +109,10 @@ public:
     return(write(fd,buf,len)==len);
   }
 
-  static char* txid(const uint64_t& ppi)
-  { static char text[20];
-    ppi_t *p=(ppi_t*)&ppi;
-    sprintf(text,"%04X%08X%04X",p->v16[2],p->v32[0],p->v16[3]);
-    return(text);
+  char* txid(const uint64_t& ppi)
+  { ppi_t *p=(ppi_t*)&ppi;
+    sprintf(txid_text,"%04X%08X%04X",p->v16[2],p->v32[0],p->v16[3]);
+    return(txid_text);
   }
 
   void read_uso(boost::property_tree::ptree& pt)
@@ -293,6 +292,7 @@ public:
 private:
   int fd;
   char filename[64];
+  char txid_text[20];
   SHA256_CTX sha256;
 };
 

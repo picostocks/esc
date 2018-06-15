@@ -704,7 +704,7 @@ public:
   }
 
   int fast_sync(bool done,header_t& head,node_t* nods,svsi_t* svsi)
-  { static uint32_t last=0;
+  { static uint32_t last=0; // static ok
     for(;;){
       uint32_t now=time(NULL);
       headers_.lock();
@@ -1139,11 +1139,13 @@ public:
         write_candidate(best);}
       return;}
     if(do_block==2){
+      std::string line;
       if(now>srvs_.now+BLOCKSEC+(BLOCKSEC/2)||now>srvs_.now+BLOCKSEC+(VIP_MAX*VOTE_DELAY)){
-        ELOG("MISSING MESSAGES, PANIC:\n%s",print_missing_verbose());} // dead lock !!!
+        print_missing_verbose(line);
+        ELOG("MISSING MESSAGES, PANIC:\n%s",line.c_str());}
       else{
-        DLOG("ELECTION: %s\n",winner->print_missing(&srvs_)); // dead lock !!!
-        }}
+        winner->print_missing(&srvs_,line);
+        DLOG("ELECTION: %s\n",line.c_str());}}
     if(do_vote && cnd1->accept() && cnd1->peers.size()>1){
       ELOG("CANDIDATE proposal accepted\n");
       write_candidate(best);
@@ -1253,9 +1255,8 @@ public:
     return(me);
   }
 
-  const char* print_missing_verbose()
+  void print_missing_verbose(std::string &line)
   { extern message_ptr nullmsg;
-    static std::string line;
     std::vector<uint64_t> missing;
     winner->get_missing(missing);
     line="";
@@ -1282,7 +1283,6 @@ public:
           sprintf(miss,",%04X",sv);
           line+=miss;}
         line+="\n";}}
-    return(line.c_str());
   }
 
   message_ptr message_find(message_ptr msg,uint16_t svid) //cnd_/blk_/dbl_/txs_.lock()
@@ -2286,9 +2286,9 @@ public:
   }
 
   void log_broadcast(uint32_t path,char* p,int len,uint8_t* hash,uint8_t* pkey,uint32_t msid,uint32_t mpos)
-  { static uint32_t lpath=0;
-    static int fd=-1;
-    static boost::mutex local_;
+  { static uint32_t lpath=0; // static ok
+    static int fd=-1; // static ok
+    static boost::mutex local_; // static ok
     boost::lock_guard<boost::mutex> lock(local_);
     if(path!=lpath || fd<0){
       if(fd>=0){
@@ -4142,8 +4142,8 @@ public:
   }
 
   bool break_silence(uint32_t now,std::string& message,uint32_t& tnum) // will be obsolete if we start tolerating empty blocks
-  { static uint32_t do_hallo=0;
-    static uint32_t del=0;
+  { static uint32_t do_hallo=0; // static ok
+    static uint32_t del=0; // static ok
     if(!opts_.svid || ofip_isreadonly()){
       return(false);}
 //#ifdef DEBUG

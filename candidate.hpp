@@ -62,9 +62,8 @@ public:
     msg_.unlock();
   }
 
-  const char* print_missing(servers* srvs) //TODO, consider having local lock
-  { static std::string line;
-    if(failed){
+  void print_missing(servers* srvs,std::string &line) //TODO, consider having local lock
+  { if(failed){
       line="FAILED MISSING: ";}
     else{
       line="MISSING: ";}
@@ -76,7 +75,6 @@ public:
       sprintf(miss," %04X:%08X",svid,msid);
       line+=miss;}
     msg_.unlock();
-    return(line.c_str());
   }
 
   void get_missing(std::vector<uint64_t>& missing)
