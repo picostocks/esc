@@ -961,8 +961,12 @@ public:
         if((tm->second->status & MSGSTAT_COM)){
           undo_message(tm->second);}
         //bad_insert(tm->second); ... already inserted
-        remove_message(tm->second);
+        //remove_message(tm->second);
         txs_msgs_.erase(tm);
+        if(tm->second->svid==opts_.svid){
+          extern bool finish;
+          ELOG("ERROR: trying to remove own invalid message, FATAL, MUST RESUBMIT (TODO!)\n");
+          finish=true;}
         continue;}
       if(!(tm->second->status & MSGSTAT_VAL) && (tm->second->status & MSGSTAT_COM)){
         ELOG("UNDO message %04X:%08X [min:%08X len:%d status:%X]\n",tm->second->svid,tm->second->msid,minmsid,tm->second->len,tm->second->status);
@@ -972,7 +976,7 @@ public:
           ELOG("REMOVE late message %04X:%08X [min:%08X len:%d]\n",tm->second->svid,tm->second->msid,minmsid,tm->second->len);
           message_ptr msg=tm->second;
           bad_insert(tm->second);
-          remove_message(tm->second);
+          //remove_message(tm->second);
           txs_msgs_.erase(tm);
           if(msg->svid==opts_.svid){
             signnew.push_front(msg);}}
@@ -989,7 +993,7 @@ public:
           ELOG("REMOVE late message %04X:%08X [min:%08X len:%d]\n",tm->second->svid,tm->second->msid,minmsid,tm->second->len);
           message_ptr msg=tm->second;
           bad_insert(tm->second);
-          remove_message(tm->second);
+          //remove_message(tm->second);
           txs_msgs_.erase(tm);
           if(msg->svid==opts_.svid){
             signnew.push_front(msg);}}
@@ -2016,7 +2020,7 @@ public:
     return(p->v64); // msid,svid,tpos
   }
 
-  bool remove_message(message_ptr msg)
+  /*bool remove_message(message_ptr msg)
   { if(msg->svid==opts_.svid){
 #ifdef DOUBLE_SPEND
       if(opts_.svid == 4){ // make mess :-)
@@ -2027,7 +2031,7 @@ public:
       ELOG("ERROR: trying to remove own message, MUST RESUBMIT (TODO!)\n");
       exit(-1);}
     return(true);
-  }
+  }*/
   /*bool remove_message(message_ptr msg) // log removing of message
   { uint8_t* p=(uint8_t*)msg->data+4+64+10;
     std::map<uint64_t,log_t> log;
