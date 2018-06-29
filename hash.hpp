@@ -55,10 +55,8 @@ public:
 					posadd=posmax-1;}
 				if(posnum>posmax){
 					posnum=posmax;}}
-				if(posadd>=posmax){
-					}
-				else{
-					add.push_back(posadd);}}
+			if(posadd<posmax){
+				add.push_back(posadd);}}
 		return(posnum);
 	}
 
@@ -117,11 +115,12 @@ public:
 		if(i==MAXTREE){
 			bzero(hash,SHA256_DIGEST_LENGTH);
 			return(0);}
+		if(!i){ // special case , add last uneven hash to hashtree
+			hashes.push_back(*(hash_s*)hash);}
 		for(i++;i<MAXTREE;i++){
 			if(hash_loaded[i]){
 				addhash(hash,hash_[i].hash);
-				hashes.push_back(*(hash_s*)hash);
-				}}
+				hashes.push_back(*(hash_s*)hash);}}
 		return(1);
 	}
 

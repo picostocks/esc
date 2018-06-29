@@ -418,11 +418,8 @@ public:
     tree.hashpath(tnum/2,(tmax+1)/2,add);
     for(auto n : add){
       DLOG("HASHTREE add %d\n",n);
-      if(n*2==tmax-1){ //special case for last uneven hash
-        lseek(fd,mlen+32+4+4+4+(4+32)*tmax-32,SEEK_SET);}
-      else{
-        assert(mlen+32+4+4+4+(4+32)*tmax+32*n<ttot);
-        lseek(fd,mlen+32+4+4+4+(4+32)*tmax+32*n,SEEK_SET);}
+      assert(mlen+32+4+4+4+(4+32)*tmax+32*n<ttot);
+      lseek(fd,mlen+32+4+4+4+(4+32)*tmax+32*n,SEEK_SET);
       hash_s phash;
       read(fd,phash.hash,32);
       hashes.push_back(phash);}

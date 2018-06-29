@@ -620,7 +620,7 @@ public:
 		tree.hashpath(mnum/2,(msg+1)/2,add);
 		for(auto n : add){
 			DLOG("HASHTREE add %d\n",n);
-			assert(n<htot);
+			assert(4+32+(2+4+32)*msg+4+32*n<htot);
 			lseek(fd,4+32+(2+4+32)*msg+4+32*n,SEEK_SET);
 			hash_s phash;
 			read(fd,phash.hash,32);
