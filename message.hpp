@@ -392,7 +392,8 @@ public:
       else{
         len=tmp[8+1+8]-pos;}
       hashes.push_back(*(hash_s*)(&tmp[8+1])); //add message hash to hashes
-      DLOG("HASHTREE start %d + %d [max:%d mlen:%d ttot:%d len:%d]\n",tnum,tnum-1,tmax,mlen,ttot,len);
+      DLOG("HASHTREE start %d + %d [max:%d htot:%d mlen:%d ttot:%d len:%d]\n",tnum,tnum-1,tmax,
+        (ttot-(mlen+32+4+4+4+(4+32)*tmax))/32,mlen,ttot,len);
       hashes.push_back(*(hash_s*)(&tmp[0]));}
     else{
       uint32_t tmp[1+8+1+8];
@@ -405,7 +406,8 @@ public:
         DLOG("HASHTREE start %d [max:%d len:%d]\n",tnum,tmax,len);}
       else{
         len=tmp[1+8]-pos;
-        DLOG("HASHTREE start %d + %d [max:%d mlen:%d ttot:%d len:%d]\n",tnum,tnum+1,tmax,mlen,ttot,len);
+        DLOG("HASHTREE start %d + %d [max:%d htot:%d mlen:%d ttot:%d len:%d]\n",tnum,tnum+1,tmax,
+          (ttot-(mlen+32+4+4+4+(4+32)*tmax))/32,mlen,ttot,len);
         hashes.push_back(*(hash_s*)(&tmp[1+8+1]));}}
     if(data!=NULL){ // assume there is no concurent access to this message
       free(data);}
@@ -416,10 +418,21 @@ public:
     std::vector<uint32_t>add;
     hashtree tree;
     tree.hashpath(tnum/2,(tmax+1)/2,add);
+    uint32_t m=32*32; //just a large number
+    if(tmax%2){ //calculate hash missing in appended hashlist
+      uint32_t tm=tmax>>1;
+      m=(tm<<1)-tree.bits(tm);
+      DLOG("HASHTREE special %d\n",m);}
     for(auto n : add){
       DLOG("HASHTREE add %d\n",n);
-      assert(mlen+32+4+4+4+(4+32)*tmax+32*n<ttot);
-      lseek(fd,mlen+32+4+4+4+(4+32)*tmax+32*n,SEEK_SET);
+      if(n<m){
+        assert(mlen+32+4+4+4+(4+32)*tmax+32*n<ttot);
+        lseek(fd,mlen+32+4+4+4+(4+32)*tmax+32*n,SEEK_SET);}
+      else if(n==m){
+        lseek(fd,mlen+32+4+4+4+(4+32)*tmax-32,SEEK_SET);}
+      else{
+        assert(mlen+32+4+4+4+(4+32)*tmax+32*(n-1)<ttot);
+        lseek(fd,mlen+32+4+4+4+(4+32)*tmax+32*(n-1),SEEK_SET);}
       hash_s phash;
       read(fd,phash.hash,32);
       hashes.push_back(phash);}

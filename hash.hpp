@@ -36,11 +36,13 @@ public:
 		return(c);
 	}
 
-	int hashpath(uint32_t hashnum,uint32_t hashmax,std::vector<uint32_t>& add)
+	void hashpath(uint32_t hashnum,uint32_t hashmax,std::vector<uint32_t>& add)
 	{	uint32_t posnum=(hashnum<<1)-bits(hashnum); 
 		uint32_t posmax=(hashmax<<1)-bits(hashmax);
+		uint32_t posend=posmax;
+		uint32_t posbit=posmax;
 		uint32_t diff=1;
-		for(;diff<posmax;){
+		for(;diff<posend;posbit>>=1){
 			uint32_t posadd;
 			if(hashnum & 1){
 				posadd=posnum-diff;
@@ -48,16 +50,15 @@ public:
 			else{
 				posadd=posnum+diff;
 				posnum=posadd+1;}
-			hashnum=hashnum>>1;
-			diff=(diff<<1)+1;
-			if(diff>=posmax){
-				if(posadd>=posmax){
-					posadd=posmax-1;}
-				if(posnum>posmax){
-					posnum=posmax;}}
-			if(posadd<posmax){
-				add.push_back(posadd);}}
-		return(posnum);
+			if(posadd<posend){
+				add.push_back(posadd);}
+			else if(diff>1){ // this can happen only once
+				add.push_back(posmax-1);}
+			if(diff>1 && posbit & 1){
+				posmax++;}
+			hashnum>>=1;
+			diff=(diff<<1)+1;}
+		//return(posnum);
 	}
 
 	void addhash(uint8_t* hash,const uint8_t* add) //hash(a,b)==hash(b,a)
@@ -115,8 +116,8 @@ public:
 		if(i==MAXTREE){
 			bzero(hash,SHA256_DIGEST_LENGTH);
 			return(0);}
-		if(!i){ // special case , add last uneven hash to hashtree
-			hashes.push_back(*(hash_s*)hash);}
+		//if(!i){ // special case , add last uneven hash to hashtree
+		//	hashes.push_back(*(hash_s*)hash);}
 		for(i++;i<MAXTREE;i++){
 			if(hash_loaded[i]){
 				addhash(hash,hash_[i].hash);

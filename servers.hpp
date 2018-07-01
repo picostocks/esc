@@ -618,10 +618,21 @@ public:
 		std::vector<uint32_t>add;
 		hashtree tree;
 		tree.hashpath(mnum/2,(msg+1)/2,add);
+		uint32_t m=32*32; //just a large number
+		if(msg%2){ //calculate hash missing in appended hashlist
+			uint32_t tm=msg>>1;
+			m=(tm<<1)-tree.bits(tm);
+			DLOG("HASHTREE special %d\n",m);}
 		for(auto n : add){
 			DLOG("HASHTREE add %d\n",n);
-			assert(4+32+(2+4+32)*msg+4+32*n<htot);
-			lseek(fd,4+32+(2+4+32)*msg+4+32*n,SEEK_SET);
+			if(n<m){
+				assert(4+32+(2+4+32)*msg+4+32*n<htot);
+				lseek(fd,4+32+(2+4+32)*msg+4+32*n,SEEK_SET);}
+			else if(n==m){
+				lseek(fd,4+32+(2+4+32)*msg-32,SEEK_SET);}
+			else{
+				assert(4+32+(2+4+32)*msg+4+32*(n-1)<htot);
+				lseek(fd,4+32+(2+4+32)*msg+4+32*(n-1),SEEK_SET);}
 			hash_s phash;
 			read(fd,phash.hash,32);
 			hashes.push_back(phash);}
