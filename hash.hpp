@@ -51,8 +51,11 @@ public:
 				posnum=posadd+1;}
 			if(posadd<posend){
 				add.push_back(posadd);}
-			else if(posfin>0){ // this can happen only once
-				add.push_back(posfin);}
+			else{ // this can happen only once
+				if(posfin>0){
+					add.push_back(posfin);}
+				posfin=0;
+				hashmax=0;}
 			if(hashmax & 1){
 				if(!posfin){
 					posfin=posend-1;}
