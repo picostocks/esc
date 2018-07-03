@@ -38,9 +38,9 @@ public:
 
 	void hashpath(uint32_t hashnum,uint32_t hashmax,std::vector<uint32_t>& add)
 	{	uint32_t posnum=(hashnum<<1)-bits(hashnum); 
-		uint32_t posmax=(hashmax<<1)-bits(hashmax);
-		uint32_t posend=posmax;
-		uint32_t posbit=posmax;
+		uint32_t posend=(hashmax<<1)-bits(hashmax);
+		uint32_t posbit=hashmax;
+		uint32_t posfin=0;
 		uint32_t diff=1;
 		for(;diff<posend;posbit>>=1){
 			uint32_t posadd;
@@ -52,10 +52,13 @@ public:
 				posnum=posadd+1;}
 			if(posadd<posend){
 				add.push_back(posadd);}
-			else if(diff>1){ // this can happen only once
-				add.push_back(posmax-1);}
-			if(diff>1 && posbit & 1){
-				posmax++;}
+			else if(posfin>0){ // this can happen only once
+				add.push_back(posfin);}
+			if(posbit & 1){
+				if(!posfin){
+					posfin=posend-1;}
+				else{
+					posfin++;}}
 			hashnum>>=1;
 			diff=(diff<<1)+1;}
 		//return(posnum);
