@@ -615,6 +615,7 @@ public:
 		uint32_t htot;
 		lseek(fd,4+32+(2+4+32)*msg,SEEK_SET);
 		read(fd,&htot,4); //needed only for debugging
+		DLOG("HASHTREE htot %d\n",htot);
 		std::vector<uint32_t>add;
 		hashtree tree;
 		tree.hashpath(mnum/2,(msg+1)/2,add);
@@ -626,12 +627,12 @@ public:
 		for(auto n : add){
 			DLOG("HASHTREE add %d\n",n);
 			if(n<m){
-				assert(4+32+(2+4+32)*msg+4+32*n<htot);
+				assert(n<htot);
 				lseek(fd,4+32+(2+4+32)*msg+4+32*n,SEEK_SET);}
 			else if(n==m){
 				lseek(fd,4+32+(2+4+32)*msg-32,SEEK_SET);}
 			else{
-				assert(4+32+(2+4+32)*msg+4+32*(n-1)<htot);
+				assert(n-1<htot);
 				lseek(fd,4+32+(2+4+32)*msg+4+32*(n-1),SEEK_SET);}
 			hash_s phash;
 			read(fd,phash.hash,32);
