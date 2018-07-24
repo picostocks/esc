@@ -1076,6 +1076,8 @@ public:
         msid++;
         assert(msid==mp->second->msid);
         mp->second->load(opts_.svid);
+        if(mp->second->now+3*BLOCKSEC>=ntime){ // prevent double spend
+          ntime=mp->second->now+3*BLOCKSEC+1;}
         mp->second->signnewtime(ntime,skey,pkey,msha);
         mp->second->status &= ~MSGSTAT_BAD;
         memcpy(msha,mp->second->sigh,sizeof(hash_t));

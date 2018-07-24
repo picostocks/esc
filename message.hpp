@@ -448,6 +448,8 @@ public:
 
   void signnewtime(uint32_t ntime,ed25519_secret_key mysk,ed25519_public_key mypk,hash_t msha)
   { assert(data[0]==MSGTYPE_MSG);
+    if(now+3*BLOCKSEC>=ntime){ //prevent double spend
+      ntime=now+3*BLOCKSEC+1;}
     memcpy(data+4+64+6,&ntime,4);
     now=ntime;
     if(!insert_user()){
