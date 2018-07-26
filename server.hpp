@@ -2393,8 +2393,8 @@ public:
     uint32_t tmpos=0;
     uint32_t omsid=last_srvs_.nodes[msg->svid].msid; //must exists
     for(;p<(char*)msg->data+msg->len;){ //tnum++
-      uint32_t luser=0;
-      uint16_t lnode=0;
+      uint32_t luser=0; //not needed!
+      uint16_t lnode=0; //not needed!
       int64_t deduct=0;
       int64_t fee=0;
       int64_t remote_fee=0;
@@ -2436,6 +2436,8 @@ public:
         return(false);}
       if((*p==TXSTYPE_USR && utxs.abank==utxs.bbank) || *p==TXSTYPE_UOK){ // check lock first
         char* lpkey;
+        //do not create a local paired account
+        uint32_t luser;
         if(*p==TXSTYPE_USR){
 	  luser=utxs.nuser(p);
           lpkey=utxs.npkey(p);}

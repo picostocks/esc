@@ -236,8 +236,9 @@ public:
 		memcpy(u.hash+6,&nodes[0].mtim,4); // network id
 		u.msid=1; // always >0 to help identify holes in delta files
                 u.time=when;
-		u.node=node;
-		u.user=user;
+                //do not create a local paired account
+		u.node=0; //=node;
+		u.user=0; //=user;
                 u.lpath=when;
                 u.rpath=when; //-START_AGE;
 		u.weight=weight;

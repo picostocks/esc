@@ -605,8 +605,9 @@ public:
           return;}
         memcpy(buf+txslen[(int)*buf]+64+0,&nuser,4);
         memcpy(buf+txslen[(int)*buf]+64+4,usera.pkey,32); //FIXME, this data is not needed !!!
-        lnode=0;
-        luser=nuser;
+        //do not create a local paired account
+        //lnode=0;
+        //luser=nuser;
 	utxs.buser=nuser;}}
     else if(*buf==TXSTYPE_BNK){ // we will get a confirmation from the network
       deduct=BANK_MIN_TMASS;
